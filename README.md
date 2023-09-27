@@ -1,11 +1,8 @@
-## My Project
+## AWS IoT - Iridium Satellite
 
-TODO: Fill this README out!
+# Projects
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+* `sbd-getting-started` Information you need use Iridium CloudConnect for SBD solution in the AWS Cloud. It also comes with an AWS CloudFormation template to deploy the infrastructure needed for the service to work.
 
 ## Security
 
@@ -13,5 +10,5 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## License
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+This repository is licensed under the MIT-0 License. See the LICENSE file.
 
