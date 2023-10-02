@@ -2,7 +2,7 @@
 
 # Projects
 
-* `sbd-getting-started` Information you need use Iridium CloudConnect for SBD solution in the AWS Cloud. It also comes with an AWS CloudFormation template to deploy the infrastructure needed for the service to work.
+* [sbd-getting-started](sbd-getting-started/README.md) Information you need use Iridium CloudConnect for SBD solution in the AWS Cloud. It also comes with an AWS CloudFormation template to deploy the infrastructure needed for the service to work.
 
 ## Security
 
