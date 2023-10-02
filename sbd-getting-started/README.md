@@ -3,7 +3,7 @@
 
 ## Overview
 
-This guide covers the information you need use Iridium CloudConnect for SBD solution in the AWS Cloud and an AWS CloudFormation template to deploy the infrastructure needed for the service to work.
+This guide covers the information you need to use Iridium CloudConnect for SBD solution in the AWS Cloud and an AWS CloudFormation template to deploy the infrastructure needed for the service to exchange messages with your AWS account.
 
 The solution is for Iridium users who want to receive their SBD device data in Amazon Simple Queue Service (Amazon SQS) queues in JavaScript Object Notation (JSON) format.
 
@@ -11,7 +11,7 @@ This deployment guide assumes that you have some familiarity with Iridium Short 
 
 ## Costs and licenses
 
-There is no cost to use this solution, but you will be billed for any AWS services or resources that this solution deploys.
+There is no cost to use this guide, but you will be billed for any AWS services or resources that this guide deploys.
 
 Iridium charges fees for messages, satellite network usage, and infrastructure setup, subject to applicable license agreements and terms and conditions with Iridium. Contact your Iridium representative, VAR, or service provider for details.
 
@@ -20,7 +20,7 @@ Iridium charges fees for messages, satellite network usage, and infrastructure s
 ![Figure 1. Architecture for Iridium CloudConnect on AWS](docs/architecture_diagram.png)
 <sub><sup>Figure 1. Architecture for Iridium CloudConnect on AWS</sup></sub>
 
-As shown in Figure 1, this CloudFormation template sets up the following:
+As shown in Figure 1, this guide deploys a CloudFormation template that sets up the following:
 
 1. Amazon SQS to provide a highly available queueing service for Iridium SBD messages. This deployment configures the following queues:
 
@@ -33,7 +33,7 @@ As shown in Figure 1, this CloudFormation template sets up the following:
 
 ## Deployment
 
-Deploy this AWS CloudFomration template in your accoun:
+Deploy this AWS CloudFormation template in your account:
 
 - [Iridium CloudConnecet for SBD - AWS CloudFormation Template](template/iridium-cloud-connect-sbd.template.yaml)
 
@@ -41,11 +41,11 @@ Deploy this AWS CloudFomration template in your accoun:
 
 ### Iridium partner or customer 
 
-If you are not already an Iridium partner or customer, navigate to [Iridium](http://www.iridium.com) to learn more. Existing Iridium customers that are not direct Iridium Value-Added Retailers (VARs) should inquire with their service provider if Iridium CloudConnect is available. Iridium maintains a list of approved Iridium CloudConnect service providers. For more information, see [Who's My Service Provider?](https://www.iridium.com/who-is-my-sp/)
+If you are not already an Iridium partner or customer, navigate to [Iridium](http://www.iridium.com) to learn more. Existing Iridium customers that are not direct Iridium Value-Added Retailers (VARs) should inquire with their service provider if Iridium CloudConnect is available. Iridium maintains a list of approved Iridium CloudConnect service providers. For more information, see [Who's My Service Provider?](https://www.iridium.com/who-is-my-sp/) on Iridium's website.
 
 ## Deployment steps
 
-1. Sign in to your AWS account, open the AWS CloudFormation console and load the template.
+1. Sign in to your AWS account, open the AWS CloudFormation console and load the template located under the `template` folder of this guide.
 
 2. Choose the correct AWS Region, and then choose **Next**.
 
@@ -59,7 +59,7 @@ If you are not already an Iridium partner or customer, navigate to [Iridium](htt
 
 7. Choose Create stack. The stack takes about 10 minutes to deploy.
 
-8. Monitor the stack’s status, and when the status is CREATE_COMPLETE, the deployment is ready.
+8. Monitor the stack’s status, and when the status is `CREATE_COMPLETE`, the deployment is ready.
 
 9. To view the created resources, choose the Outputs tab.
 
@@ -80,7 +80,7 @@ AWS provides several ways to interact with Iridium CloudConnect SBD queues, incl
 
 ### Receiving mobile-originated messages
 
-The recommended approach for receiving mobile-originated (MO) messages is to long-poll the ICCMO.fifo queue. After messages are received, save your database to process the messages, and then delete the messages.
+The recommended approach for receiving mobile-originated (MO) messages is to long-poll the ICCMO.fifo queue. After messages are received, save them in your database to process the messages, and then delete the messages.
 
 **Note:** As a precaution in case of connectivity issues, Amazon SQS doesn’t automatically delete messages when they’re received. To delete a message, you must send a separate request after receiving it. For more information, see [Receiving and deleting messages (console)](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/step-receive-delete-message.html).
 
@@ -226,6 +226,7 @@ message.delete()
 ```
 
 ### Provisioning
+
 Devices must be provisioned using Iridium SPNet or Iridium Web Services (IWS). The provisioning address format is `address:port`, which corresponds to the customer origin and destination.
 
 
@@ -259,8 +260,6 @@ When Iridium CloudConnect processes data from your device, it puts it in a JSON 
 
 **Note:** For more information about message specifications, see the Iridium Short Burst Data Service Developers Guide.
 
-
-
 #### Mobile-originated message formatting
 
 Mobile-originated messages will be translated into the following JSON format:
@@ -289,7 +288,7 @@ Mobile-originated messages will be translated into the following JSON format:
 
 **Note:** For field details, see the following tables.
 
-_Top-level MO keys_
+Top-level MO keys
 
 | Field                 | Description |
 | --------              | ------- |
@@ -298,7 +297,7 @@ _Top-level MO keys_
 | payload               | Contains the message payload. |
 | api_version           | Notes the SBD API version. The SBD API version should always be 1.    |
 
-_Location information_
+Location information
 
 |Field |Description |Type
 | --------              | ------- | -------
@@ -306,7 +305,7 @@ _Location information_
 |longitude |Contains the longitude of the device down to thousandths of a minute. |Floating point (thousandths of a minute)
 |cep_radius |Provides an estimate of the Iridium Subscriber Unit's (ISU's) location accuracy. |Integer
 
-_MO Header_
+MO Header
 
 |Field |Description |Type
 | --------              | ------- | -------
@@ -317,8 +316,7 @@ _MO Header_
 |session_status |An indication of success of the SBD session between the IMEI and the Iridium gateway associated with the over-the-air payload delivery. |String. (See the link:#_mo_session_status_values[MO session status values] table below.)
 |time_of_session |Provides a UTC timestamp of the IMEI session between the IMEI and the Iridium Gateway. |Timestamp
 
-_MO session status values_
-
+MO session status values
 
 |Status |Description |String
 | --------              | ------- | -------
@@ -331,7 +329,8 @@ _MO session status values_
 |14 |IMEI protocol anomaly occurred during SBD session. |imei_anomaly
 |15 |IMEI is prohibited from accessing the Iridium gateway. |imei_prohibited
 
-_Mobile-terminated message formatting_
+
+#### Mobile-terminated message formatting
 
 Use the following formatting to build mobile-terminated messages:
 
@@ -382,7 +381,7 @@ Use the following formatting to build mobile-terminated messages:
 ```
 **NOTE:** For more information about allowed combinations, see the Iridium Short Burst Data Service Developers Guide.
 
-_Top-level MT keys_
+Top-level MT keys
 
 |Field |Description |Type
 | --------              | ------- | -------
@@ -395,7 +394,7 @@ _Top-level MT keys_
 |assign_mtmsn |When this flag is set to `true`, the Generic Security Standard (GSS) API uses the value in the Unique ID field in the message header as the MTMSN for the associated MT message payload. |Boolean (true, false)
 
 
-_MT confirmation message formatting_
+MT confirmation message formatting
 
 ```
 {
@@ -407,7 +406,7 @@ _MT confirmation message formatting_
 }
 ```
 
-_Keys_
+Keys
 
 
 |Field |Description
@@ -418,7 +417,7 @@ _Keys_
 |auto_id_reference |Unique identifier in the Iridium gateway database.
 |mt_message_status |Number. (See link:#_mt_confirmation_status_values[MT confirmation status values] table.)
 
-_MT confirmation status values_
+MT confirmation status values
 
 |Status |Description
 | --------              | -------
