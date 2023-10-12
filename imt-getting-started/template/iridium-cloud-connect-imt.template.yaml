@@ -1,0 +1,117 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Iridium Messaging Transport CloudConnect customer CloudFormation template for creating SQS queues and cross-account permission for IMT to access the queues. Last updated 2022-07-02"
+Parameters:
+  IridiumRoleARN:
+    Description: The Amazon Resource Number (ARN) of the role within the Iridium AWS account 
+    Type: String
+  MOQueueName:
+    Description: The name for the mobile-originated queue in SQS 
+    Type: String
+    Default: IMTMO.fifo
+  MTQueueName:
+    Description: Name of the mobile-terminated queue in SQS
+    Type: String
+    Default: IMTMT.fifo
+  StatusQueueName:
+    Description: Name of the status queue in SQS
+    Type: String
+    Default: IMTSTATUS.fifo
+  CommandQueueName:
+    Description: Name of the command queue in SQS  
+    Type: String
+    Default: IMTCMD.fifo
+Resources:
+  MobileOriginatedSQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      FifoQueue: True
+      ContentBasedDeduplication: True
+      QueueName: !Ref MOQueueName
+  MobileTerminatedSQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      FifoQueue: True
+      QueueName: !Ref MTQueueName
+  StatusSQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      FifoQueue: True
+      ContentBasedDeduplication: True
+      QueueName: !Ref StatusQueueName
+  CommandSQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      FifoQueue: True
+      QueueName: !Ref CommandQueueName
+  SQSQueueCrossAccountPolicy: 
+    Type: AWS::IAM::Policy
+    DependsOn: 
+    - SQSCrossAccountRole
+    Properties: 
+      PolicyName: "allow-mas-interface-access"
+      PolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Action: 
+              - "sqs:SendMessage"
+            Resource: !Join [':', ['arn:aws:sqs', !Ref 'AWS::Region', !Ref 'AWS::AccountId', !GetAtt MobileOriginatedSQSQueue.QueueName]]
+          - 
+            Effect: "Allow"
+            Action: 
+              - "sqs:ReceiveMessage"
+            Resource: !Join [':', ['arn:aws:sqs', !Ref 'AWS::Region', !Ref 'AWS::AccountId', !GetAtt MobileTerminatedSQSQueue.QueueName]]
+          - 
+            Effect: "Allow"
+            Action: 
+              - "sqs:DeleteMessage"
+            Resource: !Join [':', ['arn:aws:sqs', !Ref 'AWS::Region', !Ref 'AWS::AccountId', !GetAtt MobileTerminatedSQSQueue.QueueName]]
+          - 
+            Effect: "Allow"
+            Action: 
+              - "sqs:SendMessage"
+            Resource: !Join [':', ['arn:aws:sqs', !Ref 'AWS::Region', !Ref 'AWS::AccountId', !GetAtt StatusSQSQueue.QueueName]]
+          - 
+            Effect: "Allow"
+            Action: 
+              - "sqs:ReceiveMessage"
+            Resource: !Join [':', ['arn:aws:sqs', !Ref 'AWS::Region', !Ref 'AWS::AccountId', !GetAtt CommandSQSQueue.QueueName]]
+          - 
+            Effect: "Allow"
+            Action: 
+              - "sqs:DeleteMessage"
+            Resource: !Join [':', ['arn:aws:sqs', !Ref 'AWS::Region', !Ref 'AWS::AccountId', !GetAtt CommandSQSQueue.QueueName]]
+      Roles: 
+      - !Ref 'SQSCrossAccountRole'
+  SQSCrossAccountRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              AWS: !Ref 'IridiumRoleARN'
+            Action: "sts:AssumeRole"
+Outputs:
+  MOQueueURL:
+    Description: The SQS queue URL for the MO message queue
+    Value: !Ref MobileOriginatedSQSQueue
+  MTQueueURL:
+    Description: The SQS queue URL for the MT message queue
+    Value: !Ref MobileTerminatedSQSQueue
+  CommandQueueURL:
+    Description: The SQS queue URL for the Command message queue
+    Value: !Ref CommandSQSQueue
+  StatusQueueURL:
+    Description: The SQS queue URL for the Status message queue
+    Value: !Ref StatusSQSQueue
+  MASRoleARN:
+    Description: IAM Role ARN which must be provided to Iridium to allow cross-account communication
+    Value: 
+      Fn::GetAtt:
+        - "SQSCrossAccountRole"
+        - "Arn"
