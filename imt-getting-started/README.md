@@ -7,21 +7,29 @@
   - [Costs and licenses](#costs-and-licenses)
   - [Architecture](#architecture)
 - [Deployment](#deployment)
-  - [Pre deployment steps](#pre-deployment-steps)
+- [Pre-deployment steps](#pre-deployment-steps)
   - [Iridium partner or customer](#iridium-partner-or-customer)
-  - [Deployment steps](#deployment-steps)
-  - [Post deployment steps](#post-deployment-steps)
-    - [Interacting with your Amazon SQS queues](#interacting-with-your-amazon-sqs-queues)
-    - [Receiving mobile-originated messages](#receiving-mobile-originated-messages)
-    - [Sending mobile-terminated messages](#sending-mobile-terminated-messages)
-      1. [Sending](#1---sending)
-      2. [Polling the confirmation message queue](#2---polling-the-confirmation-message-queue)
+- [Deployment steps](#deployment-steps)
+- [Post-deployment steps](#post-deployment-steps)
+  - [Interacting with your Amazon SQS queues](#interacting-with-your-amazon-sqs-queues)
+  - [Receiving mobile-originated messages](#receiving-mobile-originated-messages)
+  - [Sending mobile-terminated messages](#sending-mobile-terminated-messages)
+    1. [Sending](#1---sending)
+    2. [Polling the confirmation message queue](#2---polling-the-confirmation-message-queue)
 - [Provisioning](#provisioning)
 - [Data format](#data-format)
   - [CRC](#crc)
   - [MO Message](#mo-message)
   - [MT Message](#mt-message)
   - [Status message](#status-message)
+- [About Iiridium Message Transport](#about-iiridium-message-transport-imt)
+  - [IMT Messages](#imt-messages)
+  - [The application provider’s role](#the-application-providers-role)
+- [Troubleshooting](#troubleshooting)
+  - [Fequently Asked Questions (FAQ)](#fequently-asked-questions-faq)
+- [Customer responsibility](#customer-responsibility)
+- [Feedback](#feedback)
+- [Notices](#notices)
 
 ## Overview
 
@@ -31,13 +39,13 @@ The guide is for Iridium users that want to deploy Iridium CloudConnect into the
 
 You can read more about [Iridium Messaging Transport](https://www.iridium.com/services/iridium-messaging-transport/) by visiting the service description page hosted in Iridiums website.
 
-## Costs and licenses
+### Costs and licenses
 
 There is no cost to use this guide, but you will be billed for any AWS services or resources that this guide deploys.
 
 Iridium charges fees for messages, satellite network usage, and infrastructure setup, subject to applicable license agreements and terms and conditions with Iridium. Contact your Iridium representative, VAR, or service provider for details.
 
-## Architecture
+### Architecture
 
 ![Figure 1. Partner Solution architecture for Iridium CloudConnect for IMT on AWS](docs/architecture_diagram.png)
 
@@ -60,7 +68,7 @@ Deploy this AWS CloudFormation template in your account:
 
 [Iridium Messaging Transport CloudConnect customer CloudFormation template for creating SQS queues and cross-account permission for IMT to access the queues. Last updated 2022-07-02"](template/iridium-cloud-connect-imt.template.yaml)
 
-## Pre deployment steps
+## Pre-deployment steps
 
 ### Iridium partner or customer 
 
@@ -91,7 +99,7 @@ If you are not already an Iridium partner or customer, navigate to [Iridium](htt
 
 <sub><sup>Figure 2. AWS CloudFormation template outputs</sup></sub>
 
-## Post deployment steps
+## Post-deployment steps
 
 ### Interacting with your Amazon SQS queues
 
@@ -247,17 +255,17 @@ message.delete()
 
 <!-- TODO #### Polling the error message queue -->
 
-### Provisioning
+## Provisioning
 
 Devices must be provisioned using Iridium SPNet or Iridium Web Services (IWS). IMT Topics are associated with the SQS queuesets. Devices are subscribed to Topics using the SPnet and IWS interfaces. Please see the SPnet/IWS developer and user guides for more information.
 
-### Data format
+## Data format
 
 When Iridium CloudConnect processes data from your device, it puts it in a JSON object that is exchanged between Amazon SQS and the Iridium gateway through Iridium CloudConnect.
 
 JSON specification for IMT was developed to include payload and header information and follows the schema specification provided in the next sections. Full details of the IMT schema variables are provided bellow.
 
-#### CRC
+### CRC
 
 IMT uses CRC to validate MO messages when processed from the customer MO SQS queue. Additionally, MT messages are validated on the device side for correct CRC.
 
@@ -302,7 +310,7 @@ print(mt_payload_with_crc_b64)
 
 ```
 
-#### MO Message
+### MO Message
 
 Iridium Message Transport MO JSON schema:
 
@@ -399,7 +407,7 @@ Top-level MO keys
 | originatorCrcError           | Set to 'true' if a CRC error was detected on the original message before transmission    |
 
 
-#### MT Message
+### MT Message
 
 Iridium Message Transport MT JSON schema:
 
@@ -486,7 +494,7 @@ Top-level MT keys
 
 
 
-#### Status message
+### Status message
 
 Iridium Message Transport Status JSON schema:
 
@@ -792,7 +800,7 @@ A. Iridium processes messages from the IMT gateway in order of receipt but does 
 
 # Customer responsibility
 
-After you deploy this solution, confirm that your resources and services are updated and configured—including any required patches—to meet your security and other needs. For more information, refer to the [Shared Responsibility Model](https://aws.amazon.com/compliance/shared-responsibility-model).
+After you deploy this guide, confirm that your resources and services are updated and configured—including any required patches—to meet your security and other needs. For more information, refer to the [Shared Responsibility Model](https://aws.amazon.com/compliance/shared-responsibility-model).
 
 ## Feedback
 
