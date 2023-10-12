@@ -40,6 +40,7 @@ Iridium charges fees for messages, satellite network usage, and infrastructure s
 ## Architecture
 
 ![Figure 1. Partner Solution architecture for Iridium CloudConnect for IMT on AWS](docs/architecture_diagram.png)
+
 <sub><sup>Figure 1. Architecture for Iridium CloudConnect on AWS</sup></sub>
 
 As shown in Figure 1, this guide deploys a CloudFormation template that sets up the following:
@@ -87,6 +88,7 @@ If you are not already an Iridium partner or customer, navigate to [Iridium](htt
 
 
 ![Figure 2. AWS CloudFormation template outputs](docs/cfn_outputs.png)
+
 <sub><sup>Figure 2. AWS CloudFormation template outputs</sup></sub>
 
 ## Post deployment steps
@@ -751,6 +753,7 @@ Command Message Keys
 Iridium Messaging Transport makes use of Topics to handles messages across the end-end system.
 
 ![Figure 3. Architecture for Iridium CloudConnect for IMT on AWS](docs/imt_topics.png)
+
 <sub><sup>Figure 3. Architecture for Iridium CloudConnect for IMT on AWS</sup></sub>
 
 Topics are elements used to transmit and receive data via IMT. Each topic has its own 'address' that is tied to a specific Application Provider. The 'address' is known as a server-side topic that sits within an Application Server. For IMT, the Application Server SQS queuesets/hubs are used to support the use of Topics. Messages are routed to individual Topics based on message and topic configuration.
