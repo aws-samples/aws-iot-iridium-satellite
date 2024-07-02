@@ -46,18 +46,13 @@ class ImtCloudconnetEventbridgeStack(Stack):
         ImtIoTPrefix = CfnParameter(self, "ImtIoTPrefix", type="String",
             description="IoT prefix used when publishing MO messages to IoT Core. Example: CloudConnect")
         
+        ImtTopicId = CfnParameter(self, "ImtTopicId", type="String",
+            description="Topic Id provided by Iridium. Example: 123")
+        
 
     ########################################################################################################
     ##### MO START #########################################################################################
     ########################################################################################################
-
-        ########################################################################################################
-        ##### CfnParameter END #################################################################################
-        ########################################################################################################
-
-        ########################################################################################################
-        ##### imt_iot_api START ################################################################################
-        ########################################################################################################
 
         # Create role for API gateway to use when publishing to iot
         imt_iot_api_role = iam.Role(
@@ -109,14 +104,6 @@ class ImtCloudconnetEventbridgeStack(Stack):
             request_parameters={"method.request.path.cmid": False},
             authorization_type=apigw.AuthorizationType.IAM
         )
-
-        ########################################################################################################
-        ##### imt_iot_api END ##################################################################################
-        ########################################################################################################
-
-        ########################################################################################################
-        ##### imt_dynamodb_api START ###########################################################################
-        ########################################################################################################
 
         # Create DynamoDB table
         imt_mo_table = dynamodb.Table(self, "imt_mo_table",
@@ -205,10 +192,6 @@ class ImtCloudconnetEventbridgeStack(Stack):
             authorization_type=apigw.AuthorizationType.IAM
         )
         
-        ########################################################################################################
-        ##### EventBus START ###################################################################################
-        ########################################################################################################
-
         # Create new bus
         imt_bus = events.EventBus(self, "bus", event_bus_name="imt-bus")
 
@@ -237,18 +220,6 @@ class ImtCloudconnetEventbridgeStack(Stack):
                 stage="prod",
                 path_parameter_values=["$.detail.body.cmid"]
         ))
-
-
-        # Create rule for DynamoDb
-
-        ########################################################################################################
-        ##### EventBus END #####################################################################################
-        ########################################################################################################
-
-
-        ########################################################################################################
-        ##### EventBridge Pipes START ##########################################################################
-        ########################################################################################################
 
         # Create role for API gateway to use when publishing to iot
         imt_pipes_imtmo_role = iam.Role(
@@ -313,10 +284,6 @@ class ImtCloudconnetEventbridgeStack(Stack):
                 )
         )
 
-
-        ########################################################################################################
-        ##### EventBrdige Pipes END ############################################################################
-        ########################################################################################################
       
          
     ########################################################################################################
@@ -435,7 +402,7 @@ class ImtCloudconnetEventbridgeStack(Stack):
                 ),
                 target=ImtQueueImtmtArn.value_as_string,
                 target_parameters=pipes.CfnPipe.PipeTargetParametersProperty(
-                    input_template="{ \"cmid\": <$.body.detail.dynamodb.Keys.cmid.S>, \"topicId\": 179, \"payload\": <$.body.detail.dynamodb.NewImage.message.M.payload.S>, \"requestReference\": <$.body.detail.dynamodb.NewImage.message.M.requestReference.S>, \"ringStyle\": <$.body.detail.dynamodb.NewImage.message.M.ringStyle.S> }",
+                    input_template="{ \"cmid\": <$.body.detail.dynamodb.Keys.cmid.S>, \"topicId\": " + ImtTopicId.value_as_string+ ", \"payload\": <$.body.detail.dynamodb.NewImage.message.M.payload.S>, \"requestReference\": <$.body.detail.dynamodb.NewImage.message.M.requestReference.S>, \"ringStyle\": <$.body.detail.dynamodb.NewImage.message.M.ringStyle.S> }",
                     sqs_queue_parameters=pipes.CfnPipe.PipeTargetSqsQueueParametersProperty(
                         message_deduplication_id="$.body.detail.dynamodb.NewImage.message.M.requestReference.S",
                         message_group_id="$.body.detail.dynamodb.NewImage.message.M.requestReference.S"
@@ -465,8 +432,6 @@ FROM
             actions=[actions.DynamoDBv2PutItemAction(imt_mt_table2)]
         )
 
-
-    
     ########################################################################################################
     ##### STATUS START #####################################################################################
     ########################################################################################################
@@ -663,22 +628,6 @@ FROM
 }
 
 """
-
-        # imt_mo_message_integration_dynamodb = apigw.AwsIntegration(
-        #     service="dynamodb",
-        #     action="PutItem",
-        #     region=IoTRegion.value_as_string,
-        #     options=apigw.IntegrationOptions(
-        #         request_parameters={"integration.request.path.cmid": "method.request.path.cmid"},
-        #         integration_responses=[
-        #             apigw.IntegrationResponse(
-        #                 status_code="200"
-        #             )
-        #         ],
-        #         credentials_role=imt_dynamodb_api_api_role,
-        #         request_templates={"application/json": imt_dynamodb_equest_template}
-        #     )
-        # )
 
         # Create DynamoDB api gateway
         imt_dynamodb_status_api = apigw.RestApi(self, "imt_status_dynamodb_api")
