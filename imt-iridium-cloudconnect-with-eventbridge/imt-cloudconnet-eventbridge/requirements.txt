@@ -1,0 +1,7 @@
+aws-cdk-lib==2.143.1
+constructs>=10.0.0,<11.0.0
+aws_cdk.aws_pipes_alpha==2.143.1a0
+aws_cdk.aws_pipes_targets_alpha==2.143.1a0
+aws_cdk.aws_pipes_sources_alpha==2.143.1a0
+aws_cdk.aws_iot_alpha==2.143.1a0
+aws_cdk.aws_iot_actions_alpha==2.143.1a0
