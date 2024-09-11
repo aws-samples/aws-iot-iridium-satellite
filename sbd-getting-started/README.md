@@ -343,7 +343,7 @@ Use the following formatting to build mobile-terminated messages:
   "imei" : "300125010001100",
   "flush_mt_queue" : false,
   "send_ring_alert_no_payload" : false,
-  "high_priority_message" : false,
+  "message_priority" : 2,
   "assign_mtmsn" : false
 }
 ```
@@ -362,7 +362,7 @@ Use the following formatting to build mobile-terminated messages:
   "client_message_id" : 9977331,
   "message" : "68656c6c6f20776f726c64",
   "imei" : "300234087352917",
-  "priority" : 2
+  "message_priority" : 2
 }
 ```
 
@@ -390,7 +390,7 @@ Top-level MT keys
 |imei |Unique equipment identifier of the device that receives an MT message. |15-digit number
 |flush_mt_queue | When this flag is set to `true`, all payloads in the MT queue for the given IMEI are deleted. This provides an integrated method to administer MT queues. When an MT message includes a payload, it is queued after the currently queued payloads, if any, are deleted. This enables the vendor application to maintain a queue depth of one, overwriting any previously queued payloads. |Boolean (true, false)
 |send_ring_alert_no_payload |When this flag is set to `true`, the Iridium gateway sends an SBD ring alert to the specified IMEI, even though no new MT payload is queued. |Boolean (true, false)
-|high_priority_message |Places the associated MT payload in the queue according to priority level. |Boolean (true, false)
+|message_priority |Priority level of the MT message. The associated MT payload will be placed in the queue according to priority level. | Number (1 to 5)
 |assign_mtmsn |When this flag is set to `true`, the Generic Security Standard (GSS) API uses the value in the Unique ID field in the message header as the MTMSN for the associated MT message payload. |Boolean (true, false)
 
 
