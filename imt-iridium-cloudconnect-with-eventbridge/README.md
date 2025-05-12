@@ -2,6 +2,8 @@
 
 The Iridium Messaging Transport (IMT) CloudConnect With Amazon EventBridge project aims to facilitate communication between IoT devices using Iridium satellites and other services hosted in AWS. It leverages AWS services to handle, route and process data transmitted from and to remote IoT devices via satellite.
 
+> You can download this [slide deck](docs/slides.pdf). The slides were presented at the Iridium Partner Conference in March 2025. It covers the basic architecture, how to use AWS services to enable basic messaging functionality and AWS developer tools to automate infrastructure deployments.
+
 ### Key Components
 
 1. **Amazon SQS**: Communication interface between your AWS Account and Iridium CloudConenct.
